@@ -1,0 +1,8 @@
+.Navigation {
+  display: flex;
+}
+
+.NavigationItem {
+  margin-right: 20px;
+  color: white;
+}

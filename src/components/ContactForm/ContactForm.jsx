@@ -1,52 +1,63 @@
-import { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import s from './ContactForm.module.css';
 import PropTypes from 'prop-types';
+import { contactsOperations, contactsSelectors } from '../../redux/phonebook';
 
-import {
-  closeModal,
-  contactsOperations,
-  contactsSelectors,
-} from '../../redux/phonebook';
 import MyButton from '../Button';
-
 import { Container, Input, InputAdornment } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CallIcon from '@material-ui/icons/Call';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-    id: '',
-  };
+export default function ContactForm({ contactForEdit }) {
+  const [id, setId] = useState('');
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  componentDidMount() {
-    const { editedContact } = this.props;
-    if (editedContact) {
-      const { id, name, number } = editedContact;
-      this.setState({ id, name, number });
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (contactForEdit) {
+      const { id, name, number } = contactForEdit;
+      setId(id);
+      setName(name);
+      setNumber(number);
     }
-  }
+    return () => {
+      setId(id);
+      setName(name);
+      setNumber(number);
+    };
+  }, [contactForEdit]);
 
-  handleChange = e => {
+  const handleChange = e => {
     const { name, value } = e.currentTarget;
-    this.setState({
-      [name]: value,
-    });
+
+    switch (name) {
+      case 'name':
+        return setName(value);
+      case 'number':
+        return setNumber(value);
+
+      default:
+    }
   };
 
-  handleSubmit = e => {
+  const contacts = useSelector(contactsSelectors.contactsArray);
+
+  const handleSubmit = e => {
     e.preventDefault();
 
-    const { contacts } = this.props;
-    const { name, number, id } = this.state;
+    setId(id);
+    setName(name);
+    setNumber(number);
 
     let newContact;
-    this.reset();
+    reset();
 
     if (id) {
-      this.props.onEdit(this.state);
+      dispatch(contactsOperations.changeContact({ id, name, number }));
       return;
     }
 
@@ -60,80 +71,70 @@ class ContactForm extends Component {
         number: number,
       };
     }
-    return this.props.onSubmit(newContact);
+    dispatch(contactsOperations.addContact(newContact));
   };
 
-  reset = () => {
-    this.setState({ name: '', number: '' });
+  const reset = () => {
+    setName('');
+    setNumber('');
   };
-
-  render() {
-    const { name, number } = this.state;
-    const { editedContact } = this.props;
-
-    return (
-      <Container maxWidth="sm">
-        <form onSubmit={this.handleSubmit}>
-          <div className={s.phonebookInputFields}>
-            <label htmlFor={this.nameInputId} className="phonebook-label">
-              <Input
-                className={s.phonebookInput}
-                startAdornment={
-                  <InputAdornment position="start">
-                    <AccountCircleIcon />
-                  </InputAdornment>
-                }
-                type="text"
-                name="name"
-                pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                value={name}
-                title="The name can only consist of letters, apostrophes, dashes and spaces. For example: Jacob Mercer..."
-                placeholder="name"
-                onChange={this.handleChange}
-                required
-              />
-            </label>
-            <label className="phonebook-label">
-              <Input
-                startAdornment={
-                  <InputAdornment position="start">
-                    <CallIcon />
-                  </InputAdornment>
-                }
-                className={s.phonebookInput}
-                type="tel"
-                name="number"
-                value={number}
-                pattern="(\+?( |-|\.)?\d{1,2}( |-|\.)?)?(\(?\d{3}\)?|\d{3})( |-|\.)?(\d{3}( |-|\.)?\d{4})"
-                placeholder="number"
-                title="The phone number must be 11-12 digits long and can contain numbers, spaces, dashes, pot-bellied brackets and can start with +"
-                onChange={this.handleChange}
-                required
-              />
-            </label>
-            {editedContact ? (
-              <MyButton title={'Edit'} />
-            ) : (
-              <MyButton title={'Add contact'} />
-            )}
-          </div>
-        </form>
-      </Container>
-    );
-  }
+  return (
+    <Container maxWidth="sm">
+      <form onSubmit={handleSubmit}>
+        <div className={s.phonebookInputFields}>
+          <label className="phonebook-label">
+            <Input
+              className={s.phonebookInput}
+              startAdornment={
+                <InputAdornment position="start">
+                  <AccountCircleIcon />
+                </InputAdornment>
+              }
+              type="text"
+              name="name"
+              value={name}
+              inputProps={{
+                pattern:
+                  "^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$",
+                title:
+                  'The name can only consist of letters, apostrophes, dashes and spaces. For example: Jacob Mercer',
+              }}
+              placeholder="Kate White"
+              onChange={handleChange}
+              required
+            />
+          </label>
+          <label className="phonebook-label">
+            <Input
+              startAdornment={
+                <InputAdornment position="start">
+                  <CallIcon />
+                </InputAdornment>
+              }
+              className={s.phonebookInput}
+              type="tel"
+              name="number"
+              value={number}
+              placeholder="+380683033145"
+              onChange={handleChange}
+              required
+              inputProps={{
+                pattern: '[+][0-9]{2}[0-9]{3}[0-9]{2}[0-9]{2}[0-9]{3}',
+                title:
+                  'The phone number must be 11-12 digits long and can contain numbers, spaces, dashes, pot-bellied brackets and can start with +',
+              }}
+            />
+          </label>
+          {contactForEdit ? (
+            <MyButton title={'Edit'} />
+          ) : (
+            <MyButton title={'Add contact'} />
+          )}
+        </div>
+      </form>
+    </Container>
+  );
 }
-
-const mapStateToProps = state => ({
-  contacts: contactsSelectors.contactsArray(state),
-});
-
-const mapDispatchToProps = {
-  onSubmit: contact => contactsOperations.addContact(contact),
-  onEdit: contact => contactsOperations.changeContact(contact),
-  closeModal,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
 
 ContactForm.propTypes = {
   name: PropTypes.string,

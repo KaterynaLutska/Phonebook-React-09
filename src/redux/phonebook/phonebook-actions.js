@@ -20,7 +20,7 @@ export const deleteContactSuccess = createAction(
 );
 export const deleteContactError = createAction('contacts/deleteContactError');
 
-export const changeContact = createAction('contacts/changeContact');
+//export const changeContact = createAction('contacts/changeContact');
 
 export const editContactRequest = createAction('contacts/editContactRequest');
 export const editContactSuccess = createAction('contacts/editContactSuccess');

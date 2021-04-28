@@ -1,12 +1,14 @@
 import s from './Navigation.module.css';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { authSelectors } from '../../redux/auth';
-import { connect } from 'react-redux';
 
 import { Typography, CssBaseline } from '@material-ui/core';
 import { Home } from '@material-ui/icons';
 
-const Navigation = ({ isAuthenticated }) => {
+export default function Navigation() {
+  const isAuthenticated = useSelector(authSelectors.getIsAuthenticated);
+
   return (
     <div className={s.Navigation}>
       <CssBaseline />
@@ -22,10 +24,4 @@ const Navigation = ({ isAuthenticated }) => {
       )}
     </div>
   );
-};
-
-const mapStateToProps = state => ({
-  isAuthenticated: authSelectors.getIsAuthenticated(state),
-});
-
-export default connect(mapStateToProps)(Navigation);
+}

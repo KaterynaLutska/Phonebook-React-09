@@ -11,7 +11,7 @@ export default function MуМodal({ modal, onCloseModal, children }) {
         aria-describedby="transition-modal-description"
         className={classes.modal}
         open={modal}
-        onClose={() => onCloseModal()}
+        //onClose={() => onCloseModal()}
         closeAfterTransition
         BackdropProps={{
           timeout: 500,

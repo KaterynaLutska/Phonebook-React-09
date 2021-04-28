@@ -3,7 +3,7 @@ export { default as contactsSelectors } from './phonebook-selectors';
 export { default as contactReducer } from './phonebook-reducer';
 export {
   changeFilter,
-  changeContact,
+  //changeContact,
   openModal,
   closeModal,
   fetchContactsError,

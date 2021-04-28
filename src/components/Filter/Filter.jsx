@@ -1,14 +1,21 @@
 import PropTypes from 'prop-types';
 import s from './Filter.module.css';
 
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import React, { useCallback } from 'react';
+
 import { contactsSelectors } from '../../redux/phonebook';
 import { changeFilter } from '../../redux/phonebook';
 
 import { Container, Input, InputAdornment } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
-const Filter = ({ filter, changeFilter }) => {
+export default function Filter() {
+  const dispatch = useDispatch();
+  const filter = useSelector(contactsSelectors.getFilter);
+
+  //const changeFilter = e => dispatch(changeFilter(e.target.value));
+
   return (
     <Container maxWidth="sm">
       <div>
@@ -23,23 +30,13 @@ const Filter = ({ filter, changeFilter }) => {
             type="text"
             value={filter}
             placeholder="find contacts by name..."
-            onChange={changeFilter}
+            onChange={e => dispatch(changeFilter(e.target.value))}
           />
         </label>
       </div>
     </Container>
   );
-};
-
-const mapStateToProps = state => ({
-  filter: contactsSelectors.getFilter(state),
-});
-
-const mapDispatchToProps = dispatch => ({
-  changeFilter: e => dispatch(changeFilter(e.target.value)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
+}
 
 Filter.protoType = {
   filter: PropTypes.string,

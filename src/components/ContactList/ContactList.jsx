@@ -1,5 +1,11 @@
-import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import PropTypes from 'prop-types';
+import img from '../../images/face.png';
+import { openModal } from '../../redux/phonebook/phonebook-actions';
+
+import { contactsOperations, contactsSelectors } from '../../redux/phonebook';
+
 import {
   Card,
   CardMedia,
@@ -14,14 +20,18 @@ import {
 import useStyles from '../../styles';
 import MyButton from '../Button';
 
-const ContactList = ({
-  contacts,
-  onDelete,
-  avatar,
-  openModal,
-  editContact,
-}) => {
+export default function ContactList({ getContact }) {
+  const dispatch = useDispatch(null);
+
   const classes = useStyles();
+
+  const contacts = useSelector(contactsSelectors.getVisibleContacts);
+
+  const onDelete = id => dispatch(contactsOperations.deleteContacts(id));
+
+  const modalOpen = () => {
+    dispatch(openModal());
+  };
 
   return (
     <>
@@ -33,7 +43,7 @@ const ContactList = ({
               <Card className={classes.card}>
                 <CardMedia
                   className={classes.cardMedia}
-                  image={avatar}
+                  image={img}
                   title="imgTitle"
                 />
                 <CardContent className={classes.cardContent}>
@@ -43,12 +53,11 @@ const ContactList = ({
                 </CardContent>
                 <CardActions>
                   <MyButton title={'Delete'} onClick={() => onDelete(el.id)} />
-
                   <MyButton
                     title={'Edit'}
                     onClick={() => {
-                      editContact(el);
-                      openModal();
+                      modalOpen();
+                      getContact(el);
                     }}
                   />
                 </CardActions>
@@ -59,9 +68,7 @@ const ContactList = ({
       </Container>
     </>
   );
-};
-
-export default ContactList;
+}
 
 ContactList.propTypes = {
   contacts: PropTypes.arrayOf(PropTypes.shape),

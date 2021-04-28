@@ -1,55 +1,43 @@
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import ContactForm from '../components/ContactForm';
 import Filter from '../components/Filter';
 import ContactList from '../components/ContactList';
-
-import { connect } from 'react-redux';
 import { contactsOperations } from '../redux/phonebook';
-import { Component } from 'react';
 import { contactsSelectors } from '../redux/phonebook';
-import { closeModal } from '../redux/phonebook/phonebook-actions';
 import MyModal from '../components/Modal';
 
-class PhonebookView extends Component {
-  state = {
-    contactForEdit: null,
+export default function PhonebookView() {
+  const [contactForEdit, setContactForEdit] = useState(null);
+  const dispatch = useDispatch();
+
+  const modalBoolean = useSelector(contactsSelectors.getModalBoolean);
+  const items = useSelector(contactsSelectors.contactsArray);
+
+  useEffect(() => {
+    console.log('render-1 UserView');
+    dispatch(contactsOperations.fetchContacts());
+  }, [dispatch]);
+
+  const getContact = contactForEdit => {
+    setContactForEdit(contactForEdit);
   };
 
-  componentDidMount() {
-    this.props.fetchContacts();
-  }
+  // const { items, modalBoolean, closeModal } = this.props;
 
-  getContactForEdit = contactForEdit => {
-    this.setState({ contactForEdit });
-  };
-
-  render() {
-    const { items, modalBoolean, closeModal } = this.props;
-    const { contactForEdit } = this.state;
-    return (
-      <>
-        <ContactForm />
-        {items.length > 0 && (
-          <>
-            <Filter />
-            <ContactList editContact={this.getContactForEdit} />
-          </>
-        )}
-        <MyModal modal={modalBoolean} onCloseModal={closeModal}>
-          <ContactForm editedContact={contactForEdit} />
-        </MyModal>
-      </>
-    );
-  }
+  return (
+    <>
+      <ContactForm />
+      {items.length > 0 && (
+        <>
+          <Filter />
+          <ContactList getContact={getContact} />
+        </>
+      )}
+      <MyModal modal={modalBoolean}>
+        <ContactForm contactForEdit={contactForEdit} />
+      </MyModal>
+    </>
+  );
 }
-
-const mapStateToProps = state => ({
-  items: contactsSelectors.contactsArray(state),
-  modalBoolean: contactsSelectors.getModalBoolean(state),
-});
-
-const mapDispatchToProps = {
-  fetchContacts: contactsOperations.fetchContacts,
-  closeModal,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PhonebookView);

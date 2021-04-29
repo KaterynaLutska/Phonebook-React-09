@@ -8,8 +8,6 @@ import LockOpenIcon from '@material-ui/icons/LockOpen';
 export default function UserMenu() {
   const dispatch = useDispatch();
 
-  // const onLogout = dispatch(authOperations.logOut);
-
   return (
     <>
       <CssBaseline />

@@ -2,7 +2,7 @@ import React from 'react';
 import { Modal } from '@material-ui/core';
 import useStyles from '../../styles';
 
-export default function MуМodal({ modal, onCloseModal, children }) {
+export default function MуМodal({ modal, children }) {
   const classes = useStyles();
   return (
     <>
@@ -11,7 +11,6 @@ export default function MуМodal({ modal, onCloseModal, children }) {
         aria-describedby="transition-modal-description"
         className={classes.modal}
         open={modal}
-        //onClose={() => onCloseModal()}
         closeAfterTransition
         BackdropProps={{
           timeout: 500,

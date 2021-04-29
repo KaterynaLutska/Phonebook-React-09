@@ -24,7 +24,6 @@ export default function ContactList({ getContact }) {
   const dispatch = useDispatch(null);
 
   const classes = useStyles();
-
   const contacts = useSelector(contactsSelectors.getVisibleContacts);
 
   const onDelete = id => dispatch(contactsOperations.deleteContacts(id));

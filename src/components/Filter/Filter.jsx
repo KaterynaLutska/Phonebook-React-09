@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import s from './Filter.module.css';
 
 import { useDispatch, useSelector } from 'react-redux';
-import React, { useCallback } from 'react';
 
 import { contactsSelectors } from '../../redux/phonebook';
 import { changeFilter } from '../../redux/phonebook';
@@ -13,8 +12,6 @@ import SearchIcon from '@material-ui/icons/Search';
 export default function Filter() {
   const dispatch = useDispatch();
   const filter = useSelector(contactsSelectors.getFilter);
-
-  //const changeFilter = e => dispatch(changeFilter(e.target.value));
 
   return (
     <Container maxWidth="sm">

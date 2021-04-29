@@ -1,9 +1,11 @@
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import img from '../images/ket.png';
 import { authSelectors } from '../redux/auth';
 import { CssBaseline, Typography, Container } from '@material-ui/core';
 
-const HomeView = ({ isAuthenticated, name }) => {
+export default function HomeView() {
+  const isAuthenticated = useSelector(authSelectors.getIsAuthenticated);
+  const name = useSelector(authSelectors.getUserName);
   return (
     <Container maxWidth="sm">
       <CssBaseline />
@@ -64,12 +66,4 @@ const HomeView = ({ isAuthenticated, name }) => {
       )}
     </Container>
   );
-};
-
-const mapStateToProps = state => ({
-  avatar: img,
-  isAuthenticated: authSelectors.getIsAuthenticated(state),
-  name: authSelectors.getUserName(state),
-});
-
-export default connect(mapStateToProps)(HomeView);
+}

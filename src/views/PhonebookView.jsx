@@ -24,8 +24,6 @@ export default function PhonebookView() {
     setContactForEdit(contactForEdit);
   };
 
-  // const { items, modalBoolean, closeModal } = this.props;
-
   return (
     <>
       <ContactForm />
